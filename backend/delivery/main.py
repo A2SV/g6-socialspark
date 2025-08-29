@@ -7,6 +7,7 @@ def create_app():
 
     # Register routers
     app.include_router(videos.router, prefix="", tags=["videos"])
+    app.include_router(captions.router, prefix="", tags=["captions",])
 
     return app
 

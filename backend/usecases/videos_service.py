@@ -4,6 +4,7 @@ from templates.prompt_templates import STORYBOARD_PROMPT_TEMPLATE
 
 
 def generate_storyboard(request: StoryboardRequest) -> StoryboardResponse:
+    
     """
     Generates a storyboard for a video based on the provided request.
     """

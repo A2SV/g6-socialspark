@@ -171,7 +171,6 @@ class VideoGenerationSectionState extends State<VideoGenerationSection> {
     try {
       // Optional frontend-only hint: if "No music" is toggled, overwrite music field.
       if (_noMusic) {
-        // This only changes the payload we send; backend must decide how to handle it.
         storyboard = Map<String, dynamic>.from(storyboard);
         storyboard['music'] = 'none';
       }
@@ -366,15 +365,24 @@ class VideoGenerationSectionState extends State<VideoGenerationSection> {
           ],
         ),
 
-        // Frontend-only hint to try "no music" (backend must handle 'none' gracefully)
+        // ✅ Overflow-proof toggle (Expanded label wraps to 2 lines)
         const SizedBox(height: 8),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Switch(
               value: _noMusic,
               onChanged: (v) => setState(() => _noMusic = v),
             ),
-            const Text('Render without background music (frontend hint)'),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Render without background music (frontend hint only)',
+                softWrap: true,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
 
@@ -392,15 +400,21 @@ class VideoGenerationSectionState extends State<VideoGenerationSection> {
         // ---- Dev / debugging: paste a storyboard and render it directly ----
         const SizedBox(height: 16),
         ExpansionTile(
-          title: const Text('Advanced: paste storyboard JSON and render'),
+          title: const Text(
+            'Advanced: paste storyboard JSON and render',
+            softWrap: true,
+            maxLines: 2,
+          ),
           childrenPadding: const EdgeInsets.all(8),
           children: [
             TextField(
               controller: _pasteJsonCtrl,
               maxLines: 8,
               decoration: InputDecoration(
-                hintText: '{"shots":[{"duration":4,"text":"..."}],"music":"upbeat"}',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                hintText:
+                    '{"shots":[{"duration":4,"text":"..."}],"music":"upbeat"}',
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
             const SizedBox(height: 8),

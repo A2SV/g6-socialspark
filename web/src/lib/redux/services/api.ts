@@ -14,11 +14,15 @@ import type {
   ScheduleRequest,
   ScheduleResponse,
   RenderImageRequest,
+  ReminderRequest,
+  ReminderResponse,
+  ReminderStatusRequest,
+  ReminderStatusResponse
 } from "../../types/api";
 
 export const socialSparkApi = createApi({
   reducerPath: "socialSparkApi",
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_BASE_URL }),
+  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000"  }),
   tagTypes: ["Draft", "Task"],
 
   endpoints: (builder) => ({
@@ -116,6 +120,18 @@ export const socialSparkApi = createApi({
         body,
       }),
     }),
+    reminder:builder.mutation<ReminderResponse,ReminderRequest>({
+      query:(body)=>({
+        url:"/schedule/reminder",
+        method:"POST",
+        body,
+      })
+    }),
+    reminderStatus: builder.query<ReminderStatusResponse, string>({
+  query: (asset_id) => ({
+    url: `/schedule/${asset_id}`,
+  }),
+}),
   }),
 });
 
@@ -129,4 +145,6 @@ export const {
   useSchedulePostMutation,
   useRenderImageMutation,
   useGetImageStatusQuery,
+  useReminderMutation,
+  useReminderStatusQuery
 } = socialSparkApi;

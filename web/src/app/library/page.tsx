@@ -1,4 +1,5 @@
 "use client";
+
 import SearchAndFilters from "@/components/SearchAndFilters";
 import ContentCard from "@/components/ContentCard";
 import ContentListItem from "@/components/ContentListItem";
@@ -9,6 +10,7 @@ import { useLibrary } from "@/hooks/useLibrary";
 import { Sparkles } from "lucide-react";
 import { Button } from "@/components/button";
 import Header from "@/components/commonheader";
+import { useRouter } from "next/navigation";
 
 export default function LibraryPage() {
   const {
@@ -26,9 +28,15 @@ export default function LibraryPage() {
     handleCopyToClipboard,
     handleCopyHashtagsOnly,
     handleEdit,
-    handleSchedule,
     clearSearch,
   } = useLibrary();
+
+  const router = useRouter();
+
+  // Instead of direct scheduling, route to the dynamic scheduler page
+  const handleSchedule = (assetId: string) => {
+    router.push(`/scheduler/${assetId}`);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -63,7 +71,7 @@ export default function LibraryPage() {
                 onExport={handleExportAsImage}
                 onCopy={handleCopyToClipboard}
                 onEdit={handleEdit}
-                onSchedule={handleSchedule}
+                onSchedule={() => handleSchedule(item.id)} // route to scheduler
                 onDelete={handleDeleteClick}
               />
             ))}
@@ -80,7 +88,7 @@ export default function LibraryPage() {
                 onCopy={handleCopyToClipboard}
                 onCopyHashtags={handleCopyHashtagsOnly}
                 onEdit={handleEdit}
-                onSchedule={handleSchedule}
+                onSchedule={() => handleSchedule(item.id)} // route to scheduler
                 onDelete={handleDeleteClick}
               />
             ))}

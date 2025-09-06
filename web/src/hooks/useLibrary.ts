@@ -193,7 +193,7 @@ export function useLibrary() {
       contentType: item.type,
       title: item.title,
     });
-    window.location.href = `/schedule/${item.id}`;
+    window.location.href = `/scheduler/${item.id}`;
   }, []);
 
   const clearSearch = useCallback(() => {

@@ -46,6 +46,8 @@ import {
   useGetTaskQuery,
   useRenderImageMutation,
   useGetImageStatusQuery,
+  useReminderMutation,
+  useReminderStatusQuery
 } from "@/lib/redux/services/api";
 import { Alert, AlertDescription } from "@/components/alert";
 import type { Brand } from "../types/common";
@@ -170,28 +172,37 @@ export default function Dashboard() {
     }
   }, [taskError]);
 
-  useEffect(() => {
-    if (imageStatus) {
-      console.log("FULL Image status:", imageStatus);
-      const status = imageStatus.video_url?.status?.toLowerCase();
-      const imageUrl = imageStatus.video_url?.image_url;
+useEffect(() => {
+  if (imageStatus) {
+    console.log("FULL Image status:", imageStatus);
 
-      console.log("Nested status:", status);
-      console.log("Image URL:", imageUrl);
+    const jobStatus = imageStatus.status?.toLowerCase();
+    const assetStatus = imageStatus.video_url?.status?.toLowerCase();
+    const imageUrl = imageStatus.video_url?.image_url;
 
-      if ((status === "ready" || status === "completed") && imageUrl) {
-        setGeneratedContent((prev) => ({
-          ...prev,
-          imageUrl: imageUrl,
-        }));
-        setProgress(100);
-        setCurrentStep("preview");
-      } else if (status === "failed" || status === "error") {
-        setError("Image generation failed. Please try again.");
-        setIsGenerating(false);
-      }
+    console.log("Job Status:", jobStatus);
+    console.log("Asset Status:", assetStatus);
+    console.log("Image URL:", imageUrl);
+
+    if ((assetStatus === "ready" || assetStatus === "completed") && imageUrl) {
+      setGeneratedContent((prev) => ({
+        ...prev,
+        imageUrl,
+      }));
+      setProgress(100);
+      setCurrentStep("preview");
+      setIsGenerating(false); // Make sure to set generating to false
+    } else if (assetStatus === "failed" || jobStatus === "failed") {
+      setError("Image generation failed. Please try again.");
+      setIsGenerating(false);
     }
-  }, [imageStatus]);
+    // Handle queued/processing states
+    else if (assetStatus === "queued" || assetStatus === "processing") {
+      // You might want to update progress or show a different message
+      setProgress(80); // Keep progress at 80% while processing
+    }
+  }
+}, [imageStatus]);
 
   useEffect(() => {
     const error =
